@@ -14,20 +14,22 @@ from math import ceil
 from subprocess import call
 
 TPCDS_DB = os.getenv('TPCDS_DBNAME')
+IMPALA_PORT = os.getenv('IMPALA_PORT')
+IMPALA_BACKENDS_PORT = os.getenv('IMPALA_BACKENDS_PORT')
 IMPALAD = socket.getfqdn()
 LOAD_FILE = "load_store_sales_tmp.sql"
 
 def get_mem_limit():
   """Get the memory limit of an Impala daemon"""
-  content = urllib.urlopen("http://{0}:25000/varz?raw".format(IMPALAD)).read()
+  content = urllib.urlopen("http://{0}:{1}/varz?raw".format(IMPALAD,IMPALA_PORT)).read()
   # memz has the mem limit in bytes
   mem_limit_gb = float(re.findall('--mem_limit=(\d+)', content)[0])/(1024**3)
   return mem_limit_gb
 
 def get_num_backends():
   """Get the number of Impala daemons in the cluster"""
-  content = urllib.urlopen("http://{0}:25000/backends?raw".format(IMPALAD)).read()
-  return len([b for b in content.strip().split('\n') if '22000' in b])
+  content = urllib.urlopen("http://{0}:{1}/backends?raw".format(IMPALAD,IMPALA_PORT)).read()
+  return len([b for b in content.strip().split('\n') if IMPALA_BACKENDS_PORT in b])
 
 def generate_queries(ss_sold_dates):
   num_part_per_query = int(ceil(0.5 * get_mem_limit())) * get_num_backends()
@@ -85,5 +87,7 @@ def _main():
 
 if __name__ == "__main__":
   assert TPCDS_DB, "The TPCDS_DBNAME environment variable is required"
+  assert IMPALA_PORT, "The IMPALA_PORT environment variable is required"
+  assert IMPALA_BACKENDS_PORT, "The IMPALA_BACKENDS_PORT environment variable is required"
   assert get_mem_limit() > 2.0, "The impalad's memory limit is too low"
   _main()
