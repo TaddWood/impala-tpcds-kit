@@ -1,3 +1,5 @@
+# DATA SCALING CONFIG (REQUIRED)
+
 # path to the tpcds-kit directory
 export TPCDS_ROOT=$HOME/tpcds-kit
 
@@ -17,3 +19,11 @@ export DSDGEN_TOTAL_THREADS=$((DSDGEN_NODES * DSDGEN_THREADS_PER_NODE))
 
 # the name for the tpcds database
 export TPCDS_DBNAME=tpcds_parquet
+
+
+# SSH ACCESS CONFIG (OPTIONAL)
+## Configure this section if you do not have keyless ssh access between nodes.
+## Default value is False since this code is based on the prerequisite that keyless ssh access exists between nodes.
+
+export SSH_KEY=False
+export SSH_KEYNAME=mykeyname
