@@ -21,9 +21,16 @@ export DSDGEN_TOTAL_THREADS=$((DSDGEN_NODES * DSDGEN_THREADS_PER_NODE))
 export TPCDS_DBNAME=tpcds_parquet
 
 
+# IMPALA PORT CONFIG (REQUIRED)
+## NOTE: Default values for Impala port and Backends port may or may not need adjusting depending on your cluster setup.
+
+export IMPALA_PORT=25000
+export IMPALA_BACKENDS_PORT=22000
+
+
 # SSH ACCESS CONFIG (OPTIONAL)
 ## Configure this section if you do not have keyless ssh access between nodes.
-## Default value is False since this code is based on the prerequisite that keyless ssh access exists between nodes.
+## NOTE: Default value is False since this code is based on the prerequisite that keyless ssh access exists between nodes.
 
 export SSH_KEY=False
 export SSH_KEYNAME=mykeyname
